@@ -90,6 +90,7 @@ cbind(predDat, predict(hyp.out, type = "response",
 ##   Instead of doing all this ourselves, we can use the effects package to
 ##   compute quantities of interest for us (cf. the Zelig package).
 
+install.packages("effects")
 library(effects)
 plot(allEffects(hyp.out))
 
@@ -101,16 +102,18 @@ plot(allEffects(hyp.out))
 ##   1. Use glm to conduct a logistic regression to predict ever worked
 ##      (everwrk) using age (age_p) and marital status (r_maritl).
 
-summary(NH11)
-# everwrk has 18,949 NAs
-
+str(NH11$everwrk) # check stucture of everwrk
+levels(NH11$everwrk) # check levels of everwrk
+# collapse all missing values to NA
 NH11$everwrk <- factor(NH11$everwrk, levels = c("1 Yes", "2 No"))
 
+# run our regression model
 ever_work_model <- glm(
   everwrk ~ age_p + r_maritl,
   data = NH11, family = binomial)
 
 summary(ever_work_model)
+coef(summary(ever_work_model))
 
 
 ##   2. Predict the probability of working for each level of marital
@@ -118,7 +121,6 @@ summary(ever_work_model)
 ##   Note that the data is not perfectly clean and ready to be modeled. You
 ##   will need to clean up at least some of the variables before fitting
 ##   the model.
-
 
 marital <- with(
   NH11,
@@ -135,13 +137,6 @@ marital <- with(
   )
 )
 
-# Create data frame of predictions of working by mariral status
-worked_by_marital <- predict(
-  ever_work_model,
-  type = "response",
-  se.fit = TRUE, 
-  interval = "confidence",
-  newdata = marital)
-
-cbind(marital, worked_by_marital$fit)
-
+# Create data frame of predictions of working by marital status
+cbind(marital, predict(ever_work_model, type = "response",
+                       se.fit = TRUE, interval = "confidence", newdata = marital))
