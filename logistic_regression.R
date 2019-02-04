@@ -37,8 +37,10 @@ labs <- attributes(NH11)$labels
 
 str(NH11$hypev) # check stucture of hypev
 levels(NH11$hypev) # check levels of hypev
+
 # collapse all missing values to NA
 NH11$hypev <- factor(NH11$hypev, levels=c("2 No", "1 Yes"))
+
 # run our regression model
 hyp.out <- glm(hypev~age_p+sex+sleep+bmi,
               data=NH11, family="binomial")
@@ -90,7 +92,8 @@ cbind(predDat, predict(hyp.out, type = "response",
 ##   Instead of doing all this ourselves, we can use the effects package to
 ##   compute quantities of interest for us (cf. the Zelig package).
 
-install.packages("effects")
+#install.packages("effects")
+
 library(effects)
 plot(allEffects(hyp.out))
 
@@ -104,6 +107,7 @@ plot(allEffects(hyp.out))
 
 str(NH11$everwrk) # check stucture of everwrk
 levels(NH11$everwrk) # check levels of everwrk
+
 # collapse all missing values to NA
 NH11$everwrk <- factor(NH11$everwrk, levels = c("1 Yes", "2 No"))
 
@@ -122,6 +126,12 @@ coef(summary(ever_work_model))
 ##   will need to clean up at least some of the variables before fitting
 ##   the model.
 
+
+# run our regression model
+work.marry <- glm(everwrk ~ r_maritl, data = NH11, family="binomial")
+coef(summary(work.marry))
+
+
 marital <- with(
   NH11,
   expand.grid(
@@ -134,9 +144,16 @@ marital <- with(
       "7 Never married",
       "8 Living with partner",
       "9 Unknown marital status")
-  )
-)
+    )
+  ) 
 
-# Create data frame of predictions of working by marital status
-cbind(marital, predict(ever_work_model, type = "response",
-                       se.fit = TRUE, interval = "confidence", newdata = marital))
+
+# predict if the person has worked at those levels
+cbind(marital, predict(work.marry, type = "response",
+                      se.fit = TRUE, interval="confidence",
+                      newdata = marital))
+
+
+### CONCLUSION
+### From the fit data, it looks like there is a 75% chance or better that everyone has worked regardless of marital status
+
