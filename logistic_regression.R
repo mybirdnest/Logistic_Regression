@@ -127,14 +127,9 @@ coef(summary(ever_work_model))
 ##   the model.
 
 
-# run our regression model
-work.marry <- glm(everwrk ~ r_maritl, data = NH11, family="binomial")
-coef(summary(work.marry))
-
-
 marital <- with(
   NH11,
-  expand.grid(
+  expand.grid(age_p = mean(age_p, na.rm = TRUE),
     r_maritl = c(
       "1 Married - spouse in household", 
       "2 Married - spouse not in household", 
@@ -147,13 +142,12 @@ marital <- with(
     )
   ) 
 
-
 # predict if the person has worked at those levels
-cbind(marital, predict(work.marry, type = "response",
+cbind(marital, predict(ever_work_model, type = "response",
                       se.fit = TRUE, interval="confidence",
                       newdata = marital))
 
 
 ### CONCLUSION
-### From the fit data, it looks like there is a 75% chance or better that everyone has worked regardless of marital status
+### From the fit data, it looks like there is a 76% chance or better that everyone has worked regardless of marital status
 
