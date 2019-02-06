@@ -149,5 +149,12 @@ cbind(marital, predict(ever_work_model, type = "response",
 
 
 ### CONCLUSION
-### From the fit data, it looks like there is a 76% chance or better that everyone has worked regardless of marital status
-
+### From the fit data, it looks like there is a 
+###    13% chance of working with 'Married - spouse in household' status,
+###    14% chance of working with 'Married - spouse not in household' status,
+###    23% chance of working with 'Widowed' status,
+###    7% chance of working with 'Divorced' status,
+###    12% chance of working with 'Separated' status,
+###    18% chance of working with 'Never Married' status,
+###    9% chance of working with 'Living with partner' status,
+###    19% chance of working with 'Unknown marital' status
